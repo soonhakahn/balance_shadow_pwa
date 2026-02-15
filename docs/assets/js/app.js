@@ -17,13 +17,21 @@ function tradingViewIframe(symbol){
   return `<iframe loading="lazy" width="100%" height="220" src="${url}"></iframe>`;
 }
 
-// Minimal name->code map (expand later). Without mapping, chart will be skipped.
-const NAME_TO_CODE = {
-  '삼성전자':'005930',
-  'SK하이닉스':'000660',
-  '두산에너빌리티':'034020',
-  '미래에셋증권':'006800'
-};
+let NAME_TO_CODE = {};
+
+async function loadNameMap(bust=false){
+  try{
+    const ts = bust ? `?ts=${Date.now()}` : '';
+    const res = await fetch(`./reports/name_to_code.json${ts}`, { cache: 'no-store' });
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    NAME_TO_CODE = data.nameToCode || {};
+    return { ok:true, meta: `${data.bizday||''} · ${data.count||0} tickers` };
+  }catch(e){
+    NAME_TO_CODE = {};
+    return { ok:false, meta: `name map load failed: ${String(e)}` };
+  }
+}
 
 async function loadLatest(bust=false){
   const ts = bust ? `?ts=${Date.now()}` : '';
@@ -167,8 +175,9 @@ let themeMap;
 
 async function init(){
   bindTabs();
+  const nm = await loadNameMap(false);
   latest = await loadLatest(false);
-  $('#meta').textContent = `${latest.date||'-'} · items ${latest.items?.length||0}`;
+  $('#meta').textContent = `${latest.date||'-'} · items ${latest.items?.length||0} · ${nm.meta}`;
   themeMap = buildThemeIndex(latest.items||[]);
   renderTop30(latest);
   renderDictionary(themeMap);
@@ -177,8 +186,9 @@ async function init(){
     renderSearchResults($('#q').value, themeMap);
   });
   $('#refresh').addEventListener('click', async ()=>{
+    const nm2 = await loadNameMap(true);
     latest = await loadLatest(true);
-    $('#meta').textContent = `${latest.date||'-'} · items ${latest.items?.length||0}`;
+    $('#meta').textContent = `${latest.date||'-'} · items ${latest.items?.length||0} · ${nm2.meta}`;
     themeMap = buildThemeIndex(latest.items||[]);
     renderTop30(latest);
     renderDictionary(themeMap);
