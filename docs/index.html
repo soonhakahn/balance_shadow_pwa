@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./assets/css/app.css" />
+  <title>ShadowTrade Top30</title>
+</head>
+<body>
+  <div class="header">
+    <div class="title">ShadowTrade · TOP30 기반</div>
+    <div class="sub">balanceasset(몽당연필) TOP30 정리 → 키워드/테마 사전화 + 1년 차트(TradingView)</div>
+  </div>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab active" data-tab="search">키워드</button>
+      <button class="tab" data-tab="top30">TOP30</button>
+      <button class="tab" data-tab="dictionary">사전(테마)</button>
+      <button class="tab" data-tab="settings">설정</button>
+    </div>
+
+    <div id="panel-search" class="grid two">
+      <div class="card">
+        <h3>키워드/뉴스 입력</h3>
+        <textarea id="q" placeholder="예) 증권 / 원전 / 우주항공 / 하늘이법 / 데이터센터 전력"></textarea>
+        <div class="row" style="margin-top:10px">
+          <button class="btn ok" id="run">찾기</button>
+          <button class="btn" id="refresh">TOP30 갱신</button>
+          <span class="small" id="meta">-</span>
+        </div>
+        <div class="small" style="margin-top:10px">
+          * 이 앱은 일자별 TOP30 텍스트를 바탕으로 "테마(키워드) → 종목"을 누적해 가는 구조입니다.
+        </div>
+      </div>
+      <div class="card">
+        <h3>결과</h3>
+        <div id="out" class="list"><div class="small">키워드를 입력하고 “찾기”를 누르세요.</div></div>
+      </div>
+    </div>
+
+    <div id="panel-top30" class="card" style="display:none">
+      <h3>최근 TOP30</h3>
+      <div class="small" id="top30meta">-</div>
+      <hr>
+      <div id="top30list" class="list"></div>
+    </div>
+
+    <div id="panel-dictionary" class="card" style="display:none">
+      <h3>테마 사전(자동 생성)</h3>
+      <div class="small">최근 TOP30에서 추출된 theme 필드를 묶어 보여줍니다. (정확도는 텍스트 품질에 따라 달라요)</div>
+      <hr>
+      <div id="dict" class="list"></div>
+    </div>
+
+    <div id="panel-settings" class="card" style="display:none">
+      <h3>설정</h3>
+      <div class="small">
+        차트는 TradingView 위젯을 사용합니다. 종목코드 매핑이 없으면 차트는 표시되지 않고, 종목명만 보여줍니다.
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./assets/js/app.js"></script>
+</body>
+</html>
